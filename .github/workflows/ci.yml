@@ -1,0 +1,20 @@
+name: Testing actions
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: alanenriqueo/postgresql@fix-public-ip-firewall
+        with:
+          connection-string: ${{ secrets.AZURE_POSTGRESQL_CONNECTION_STRING }}
+          server-name: ${{ secrets.AZURE_POSTGRESQL_SERVER_NAME }}
+          plsql-file: test.sql
