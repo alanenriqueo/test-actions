@@ -9,12 +9,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: Azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - uses: alanenriqueo/postgresql@fix-public-ip-firewall
+      - uses: azure/CLI@v1
+        with:
+          azcliversion: 2.39.0
+          inlineScript: |
+            az version
+            az extension list
+      - uses: actions/checkout@v2
+      - uses: Azure/postgresql@v1
         with:
           connection-string: ${{ secrets.AZURE_POSTGRESQL_CONNECTION_STRING }}
           server-name: ${{ secrets.AZURE_POSTGRESQL_SERVER_NAME }}
           plsql-file: test.sql
+      #- uses: Azure/mysql@v1
+      #  with:
+      #    server-name: ${{ secrets.AZURE_MYSQL_SERVER_NAME }}
+      #    username: ${{ secrets.AZURE_MYSQL_USERNAME }}
+      #    password: ${{ secrets.AZURE_MYSQL_PASSWORD }}
+      #    database: test
+      #    sql-file: test.sql
